@@ -18,7 +18,10 @@
   -->
   <PropertyGroup>
     <RevitVersion>2024</RevitVersion>
-    <RevitInstallDir Condition="'$(RevitInstallDir)' == ''">C:\Program Files\Autodesk\Revit 2024\</RevitInstallDir>
+    <!-- Проверяются по очереди: стандартная папка установки, затем D:\Revit 2024\. -->
+    <RevitInstallDir Condition="'$(RevitInstallDir)' == '' And Exists('C:\Program Files\Autodesk\Revit 2024\RevitAPI.dll')">C:\Program Files\Autodesk\Revit 2024\</RevitInstallDir>
+    <RevitInstallDir Condition="'$(RevitInstallDir)' == '' And Exists('D:\Revit 2024\RevitAPI.dll')">D:\Revit 2024\</RevitInstallDir>
+    <RevitInstallDir Condition="'$(RevitInstallDir)' == ''">D:\Revit 2024\</RevitInstallDir>
     <RevitInstallDir>$([MSBuild]::EnsureTrailingSlash('$(RevitInstallDir)'))</RevitInstallDir>
   </PropertyGroup>
 
