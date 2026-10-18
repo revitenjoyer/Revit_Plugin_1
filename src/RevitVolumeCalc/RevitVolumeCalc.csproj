@@ -1,0 +1,66 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <PlatformTarget>x64</PlatformTarget>
+    <RootNamespace>RevitVolumeCalc</RootNamespace>
+    <AssemblyName>RevitVolumeCalc</AssemblyName>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <Version>1.0.0</Version>
+    <Product>RevitVolumeCalc</Product>
+    <Description>Подсчёт объёма выделенных элементов в Revit 2024</Description>
+  </PropertyGroup>
+
+  <!--
+    Путь к установленному Revit 2024. Если Revit стоит в другой папке, поменяйте значение здесь
+    или передайте при сборке: msbuild /p:RevitInstallDir="D:\Autodesk\Revit 2024\"
+    Путь должен заканчиваться обратной косой чертой.
+  -->
+  <PropertyGroup>
+    <RevitVersion>2024</RevitVersion>
+    <RevitInstallDir Condition="'$(RevitInstallDir)' == ''">C:\Program Files\Autodesk\Revit 2024\</RevitInstallDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="RevitAPI">
+      <HintPath>$(RevitInstallDir)RevitAPI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="RevitAPIUI">
+      <HintPath>$(RevitInstallDir)RevitAPIUI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+
+  <!-- Позволяет собрать проект под .NET Framework 4.8 даже без установленного Developer Pack. -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\*.png" />
+    <EmbeddedResource Include="Resources\Volume16.png" LogicalName="RevitVolumeCalc.Resources.Volume16.png" />
+    <EmbeddedResource Include="Resources\Volume32.png" LogicalName="RevitVolumeCalc.Resources.Volume32.png" />
+    <None Update="RevitVolumeCalc.addin" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <!--
+    Необязательная автоустановка после сборки:
+    msbuild RevitVolumeCalc.sln /p:Configuration=Release /p:DeployToRevit=true
+    Копирует .addin в %AppData%\Autodesk\Revit\Addins\2024\ и DLL в подпапку RevitVolumeCalc.
+    Перед этим закройте Revit, иначе DLL будет занята и копирование завершится ошибкой.
+  -->
+  <Target Name="DeployToRevit" AfterTargets="Build" Condition="'$(DeployToRevit)' == 'true'">
+    <PropertyGroup>
+      <RevitAddinsDir>$(APPDATA)\Autodesk\Revit\Addins\$(RevitVersion)\</RevitAddinsDir>
+    </PropertyGroup>
+    <Copy SourceFiles="$(MSBuildProjectDirectory)\RevitVolumeCalc.addin" DestinationFolder="$(RevitAddinsDir)" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(RevitAddinsDir)RevitVolumeCalc\" />
+    <Message Importance="high" Text="RevitVolumeCalc установлен в $(RevitAddinsDir)" />
+  </Target>
+
+</Project>

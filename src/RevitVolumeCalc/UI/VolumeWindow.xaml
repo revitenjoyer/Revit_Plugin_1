@@ -1,0 +1,119 @@
+<Window x:Class="RevitVolumeCalc.UI.VolumeWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Объём выделенного"
+        Width="480" Height="520" MinWidth="380" MinHeight="320"
+        WindowStartupLocation="CenterOwner"
+        ShowInTaskbar="False"
+        ResizeMode="CanResizeWithGrip"
+        FontFamily="Segoe UI" FontSize="13"
+        Background="#F7F7F7">
+
+    <Grid Margin="14">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Итог -->
+        <Border Grid.Row="0" Background="White" BorderBrush="#DDDDDD" BorderThickness="1"
+                CornerRadius="3" Padding="12,10">
+            <StackPanel>
+                <TextBlock Text="Общий объём" Foreground="#666666" />
+                <TextBlock x:Name="TotalText" Text="0,00 м³" FontSize="26" FontWeight="SemiBold"
+                           Foreground="#1C4E8C" />
+                <TextBlock x:Name="SummaryText" Foreground="#555555" TextWrapping="Wrap" Margin="0,2,0,0" />
+            </StackPanel>
+        </Border>
+
+        <TextBlock Grid.Row="1" Margin="2,12,0,6" Foreground="#666666" TextWrapping="Wrap"
+                   Text="Щёлкните по строке, чтобы выделить её элементы в модели." />
+
+        <!-- Категории -->
+        <DataGrid x:Name="RowsGrid" Grid.Row="2"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  CanUserReorderColumns="False"
+                  CanUserResizeRows="False"
+                  CanUserSortColumns="False"
+                  SelectionMode="Single"
+                  SelectionUnit="FullRow"
+                  HeadersVisibility="Column"
+                  GridLinesVisibility="Horizontal"
+                  HorizontalGridLinesBrush="#EEEEEE"
+                  RowHeaderWidth="0"
+                  Background="White"
+                  BorderBrush="#DDDDDD">
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <EventSetter Event="PreviewMouseLeftButtonUp" Handler="OnRowClick" />
+                    <Setter Property="Cursor" Value="Hand" />
+                    <Setter Property="MinHeight" Value="26" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsNoVolumeRow}" Value="True">
+                            <Setter Property="FontStyle" Value="Italic" />
+                            <Setter Property="Foreground" Value="#9A5B00" />
+                            <Setter Property="ToolTip"
+                                    Value="У этих элементов нет заполненного параметра «Объём». В общий объём они не входят." />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Категория" Binding="{Binding Name, Mode=OneWay}" Width="*">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Margin" Value="6,3" />
+                            <Setter Property="VerticalAlignment" Value="Center" />
+                            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+
+                <DataGridTextColumn Header="Объём, м³" Binding="{Binding VolumeText, Mode=OneWay}" Width="Auto" MinWidth="100">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Margin" Value="6,3" />
+                            <Setter Property="VerticalAlignment" Value="Center" />
+                            <Setter Property="HorizontalAlignment" Value="Right" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+
+                <DataGridTextColumn Header="Кол-во" Binding="{Binding Count, Mode=OneWay}" Width="Auto" MinWidth="70">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Margin" Value="6,3" />
+                            <Setter Property="VerticalAlignment" Value="Center" />
+                            <Setter Property="HorizontalAlignment" Value="Right" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- Статус и кнопки -->
+        <Grid Grid.Row="3" Margin="0,12,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock x:Name="StatusText" Grid.Column="0" VerticalAlignment="Center"
+                       Foreground="#555555" TextWrapping="Wrap" Margin="2,0,12,0" />
+
+            <Button Grid.Column="1" Content="Пересчитать" MinWidth="110" Padding="10,4"
+                    Margin="0,0,8,0" Click="OnRefreshClick"
+                    ToolTip="Посчитать заново по тому, что сейчас выделено в модели" />
+
+            <Button Grid.Column="2" Content="Закрыть" MinWidth="90" Padding="10,4"
+                    IsCancel="True" Click="OnCloseClick" />
+        </Grid>
+    </Grid>
+</Window>

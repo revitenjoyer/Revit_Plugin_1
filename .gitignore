@@ -1,0 +1,16 @@
+# Visual Studio / MSBuild
+.vs/
+[Bb]in/
+[Oo]bj/
+*.user
+*.suo
+*.userprefs
+*.rsuser
+*.cache
+*.log
+packages/
+TestResults/
+
+# OS
+Thumbs.db
+.DS_Store

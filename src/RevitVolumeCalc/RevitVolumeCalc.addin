@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+  <AddIn Type="Application">
+    <Name>RevitVolumeCalc</Name>
+    <!-- Путь относительно папки, в которой лежит этот .addin-файл. -->
+    <Assembly>RevitVolumeCalc\RevitVolumeCalc.dll</Assembly>
+    <FullClassName>RevitVolumeCalc.App</FullClassName>
+    <AddInId>8ec3c71d-d304-4ed6-9f05-f8cea80587d7</AddInId>
+    <VendorId>revitenjoyer</VendorId>
+    <VendorDescription>revitenjoyer, https://github.com/revitenjoyer</VendorDescription>
+  </AddIn>
+</RevitAddIns>
