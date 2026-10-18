@@ -15,12 +15,18 @@
   <!--
     Путь к установленному Revit 2024. Если Revit стоит в другой папке, поменяйте значение здесь
     или передайте при сборке: msbuild /p:RevitInstallDir="D:\Autodesk\Revit 2024\"
-    Путь должен заканчиваться обратной косой чертой.
   -->
   <PropertyGroup>
     <RevitVersion>2024</RevitVersion>
     <RevitInstallDir Condition="'$(RevitInstallDir)' == ''">C:\Program Files\Autodesk\Revit 2024\</RevitInstallDir>
+    <RevitInstallDir>$([MSBuild]::EnsureTrailingSlash('$(RevitInstallDir)'))</RevitInstallDir>
   </PropertyGroup>
+
+  <!-- Понятная ошибка вместо десятков «не удалось найти тип Autodesk...», если путь к Revit неверный. -->
+  <Target Name="CheckRevitApiReferences" BeforeTargets="ResolveAssemblyReferences">
+    <Error Condition="!Exists('$(RevitInstallDir)RevitAPI.dll') Or !Exists('$(RevitInstallDir)RevitAPIUI.dll')"
+           Text="Не найдены RevitAPI.dll и RevitAPIUI.dll в папке '$(RevitInstallDir)'. Укажите папку установки Revit 2024 в свойстве RevitInstallDir файла RevitVolumeCalc.csproj (см. README)." />
+  </Target>
 
   <ItemGroup>
     <Reference Include="RevitAPI">

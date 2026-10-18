@@ -15,7 +15,7 @@ Developer Pack для .NET Framework 4.8 не обязателен: нужные
 2. Выберите конфигурацию **Release** и выполните **Сборка → Собрать решение**.
 3. Результат: `src\RevitVolumeCalc\bin\Release\RevitVolumeCalc.dll`.
 
-Проект ссылается на `RevitAPI.dll` и `RevitAPIUI.dll` в папке `C:\Program Files\Autodesk\Revit 2024\`. Если Revit установлен в другую папку, исправьте свойство `RevitInstallDir` в `RevitVolumeCalc.csproj`. Путь должен заканчиваться на `\`.
+Проект ссылается на `RevitAPI.dll` и `RevitAPIUI.dll` в папке `C:\Program Files\Autodesk\Revit 2024\`. Если Revit установлен в другую папку, сборка остановится с ошибкой «Не найдены RevitAPI.dll и RevitAPIUI.dll». Тогда найдите на диске папку, где лежит `RevitAPI.dll`, и впишите её в свойство `RevitInstallDir` в `RevitVolumeCalc.csproj`. Например: `<RevitInstallDir Condition="'$(RevitInstallDir)' == ''">D:\Autodesk\Revit 2024\</RevitInstallDir>`. Чтобы открыть файл проекта, щёлкните правой кнопкой по проекту RevitVolumeCalc в «Обозревателе решений» и выберите «Изменить файл проекта».
 
 ## Установка
 
